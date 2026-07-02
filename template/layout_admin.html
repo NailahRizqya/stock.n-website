@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Dashboard - Stock.n{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Poppins', 'sans-serif'] },
+                    colors: {
+                        primary: '#8B5CF6',
+                        secondary: '#EC4899',
+                        galaxy: '#60A5FA',
+                        bglight: '#F8F6FF',
+                        textmain: '#3B1F6A',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(140deg, #F8F6FF 0%, #FFF5FC 60%, #F0F7FF 100%);
+            color: #6B5A8E;
+            min-height: 100vh;
+        }
+
+        /* Scrollbar galaxy */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #F5F0FF;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #93C5FD, #C084FC, #F9A8D4);
+            border-radius: 4px;
+        }
+
+        /* Sidebar gradient */
+        .sidebar-galaxy {
+            background: linear-gradient(160deg, #F0F4FF 0%, #F8EEFF 50%, #FFF0F8 100%);
+            border-right: 1px solid rgba(180, 140, 210, 0.25);
+        }
+
+        /* Nav active item */
+        .nav-active {
+            background: linear-gradient(120deg,
+                    rgba(120, 170, 255, 0.22),
+                    rgba(200, 120, 230, 0.18),
+                    rgba(255, 150, 190, 0.14));
+            border: 1px solid rgba(180, 130, 220, 0.3);
+            color: #6030A8 !important;
+            font-weight: 700;
+        }
+
+        /* Logo teks gradient */
+        .logo-gradient {
+            background: linear-gradient(90deg, #5A9EF0, #A855F7, #EC4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Avatar gradient */
+        .avatar-galaxy {
+            background: linear-gradient(135deg, #7AB3F5, #C97DE8, #F47AB0);
+        }
+
+        /* Logo icon */
+        .logo-icon-galaxy {
+            background: linear-gradient(135deg, #7AB3F5, #C97DE8, #F47AB0);
+        }
+
+        /* Topbar */
+        .topbar-galaxy {
+            background: rgba(255, 255, 255, 0.78);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(200, 170, 230, 0.25);
+        }
+
+        /* Notif button */
+        .notif-btn-galaxy {
+            background: linear-gradient(135deg,
+                    rgba(120, 170, 255, 0.2),
+                    rgba(220, 140, 230, 0.2));
+            border: 1px solid rgba(180, 140, 220, 0.35);
+            color: #8050C0;
+        }
+
+        /* Panel notifikasi */
+        #notif-panel {
+            display: none;
+            position: absolute;
+            top: 60px;
+            right: 16px;
+            width: 310px;
+            background: rgba(255, 255, 255, 0.97);
+            border: 1px solid rgba(200, 170, 230, 0.35);
+            border-radius: 18px;
+            box-shadow:
+                0 8px 32px rgba(150, 100, 210, 0.12),
+                0 2px 8px rgba(200, 140, 230, 0.1);
+            z-index: 50;
+            overflow: hidden;
+        }
+
+        #notif-panel.open {
+            display: block;
+        }
+
+        .notif-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 14px;
+            border-bottom: 1px solid rgba(200, 170, 230, 0.12);
+            font-size: 12px;
+        }
+
+        .notif-item:last-child {
+            border-bottom: none;
+        }
+
+        .notif-item.unread {
+            background: linear-gradient(90deg,
+                    rgba(200, 180, 255, 0.1),
+                    rgba(255, 200, 230, 0.1));
+        }
+
+        .notif-dot {
+            width: 8px;
+            height: 8px;
+            background: linear-gradient(135deg, #80B0FF, #F080B0);
+            border-radius: 50%;
+            flex-shrink: 0;
+            margin-top: 4px;
+        }
+
+        /* Main content area */
+        .main-galaxy {
+            background: linear-gradient(140deg, #F8F6FF 0%, #FFF5FC 60%, #F0F7FF 100%);
+        }
+
+        /* Flash message override */
+        .flash-success {
+            background: rgba(200, 255, 230, 0.6);
+            border: 1px solid rgba(100, 200, 150, 0.35);
+            color: #2A6A4A;
+        }
+
+        .flash-error {
+            background: rgba(255, 210, 220, 0.6);
+            border: 1px solid rgba(240, 140, 160, 0.35);
+            color: #8A2040;
+        }
+
+        .flash-info {
+            background: rgba(200, 200, 255, 0.6);
+            border: 1px solid rgba(160, 160, 240, 0.35);
+            color: #3030A0;
+        }
+    </style>
+</head>
+
+<body class="flex h-screen overflow-hidden">
+
+    <!-- Sidebar -->
+    <aside class="sidebar-galaxy w-64 flex flex-col justify-between hidden md:flex h-full shrink-0">
+        <div>
+            <!-- Logo -->
+            <div class="flex items-center gap-3 px-6 py-6" style="border-bottom: 1px solid rgba(180,140,210,0.2);">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center shadow-sm overflow-hidden bg-transparent">
+                    <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="w-full h-full object-cover">
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold logo-gradient leading-tight">stock.n</h1>
+                    <p class="text-[10px] font-medium" style="color: #B48CC8;">Smart Inventory</p>
+                </div>
+            </div>
+
+            <!-- Menu -->
+            <div class="px-4 py-5">
+                <p class="text-[9px] font-bold tracking-widest mb-3 px-2" style="color: #C4A0D8;">MENU</p>
+
+                <!-- Tombol Back -->
+                <a href="{{ url_for('index') }}"
+                    class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm font-medium mb-3 transition-all"
+                    style="color: #A090B8;"
+                    onmouseover="this.style.color='#7050A8';this.style.background='rgba(160,120,210,0.1)'"
+                    onmouseout="this.style.color='#A090B8';this.style.background='transparent'">
+                    <span>←</span> Kembali ke beranda
+                </a>
+
+                <nav class="space-y-1">
+                    <a href="{{ url_for('dashboard_manage') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all
+                       {% if request.endpoint == 'dashboard_manage' %}nav-active{% else %}font-medium{% endif %}"
+                        style="{% if request.endpoint != 'dashboard_manage' %}color:#7A6A8E;{% endif %}">
+                        <span class="text-base">🎛️</span> Dashboard
+                    </a>
+
+                    <a href="{{ url_for('inventory_page') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all
+                       {% if request.endpoint == 'inventory_page' %}nav-active{% else %}font-medium{% endif %}"
+                        style="{% if request.endpoint != 'inventory_page' %}color:#7A6A8E;{% endif %}">
+                        <span class="text-base">📦</span> Inventori
+                    </a>
+
+                    <a href="{{ url_for('kategori_manage') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all
+                       {% if request.endpoint == 'kategori_manage' %}nav-active{% else %}font-medium{% endif %}"
+                        style="{% if request.endpoint != 'kategori_manage' %}color:#7A6A8E;{% endif %}">
+                        <span class="text-base">📁</span> Kategori
+                    </a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- User & Logout -->
+        <div class="p-4" style="border-top: 1px solid rgba(180,140,210,0.2); background: rgba(255,255,255,0.4);">
+            <div class="flex items-center gap-3 px-2 mb-3">
+                <div
+                    class="avatar-galaxy w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm text-white shadow">
+                    {{ session.get('username', 'U')[0]|upper }}
+                </div>
+                <div>
+                    <p class="text-xs font-bold truncate max-w-[110px]" style="color: #4A3A6A;">{{
+                        session.get('username') }}</p>
+                    <p class="text-[10px] font-medium" style="color: #B080D0;">User</p>
+                </div>
+            </div>
+            <a href="{{ url_for('logout') }}"
+                class="flex items-center justify-center gap-2 w-full py-2 rounded-xl text-xs font-bold transition-colors"
+                style="color: #C04070; border: 1px solid rgba(220,130,160,0.35); background: rgba(255,240,248,0.8);"
+                onmouseover="this.style.background='rgba(255,210,230,0.6)'"
+                onmouseout="this.style.background='rgba(255,240,248,0.8)'">
+                🚪 Keluar akun
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-galaxy flex-1 flex flex-col h-full overflow-hidden relative">
+
+        <!-- Topbar -->
+        <header class="topbar-galaxy h-16 flex items-center justify-between px-8 shrink-0 relative z-20">
+            <h2 class="text-xs font-bold uppercase tracking-widest" style="color: #5A3A7A;">
+                {% block header_title %}Inventori{% endblock %}
+            </h2>
+            <div class="flex items-center gap-3">
+
+
+
+                <div
+                    class="avatar-galaxy w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs text-white shadow">
+                    {{ session.get('username', 'U')[0]|upper }}
+                </div>
+            </div>
+        </header>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="px-8 mt-4 relative z-20 space-y-2">
+            {% for category, message in messages %}
+            {% set flash_class = 'flash-info' %}
+            {% if category == 'success' %}{% set flash_class = 'flash-success' %}{% endif %}
+            {% if category == 'error' %}{% set flash_class = 'flash-error' %}{% endif %}
+            <div class="p-3 text-sm rounded-2xl {{ flash_class }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <!-- Content Area -->
+        <div class="flex-1 overflow-y-auto p-8 relative z-10">
+            {% block content %}{% endblock %}
+
+            <div class="text-center text-xs py-8" style="color: #C0A8D8;">
+                stock.n &copy; 2026 &middot; Smart Inventory Management &middot; Designed with ❤️
+            </div>
+        </div>
+    </main>
+
+
+</body>
+
+</html>

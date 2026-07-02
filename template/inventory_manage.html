@@ -1,0 +1,215 @@
+{% extends 'layout_admin.html' %}
+{% block title %}Inventori - Stock.n{% endblock %}
+{% block header_title %}Inventori{% endblock %}
+
+{% block content %}
+<div class="mb-8">
+    <h1 class="text-2xl font-bold text-textmain mb-1">Inventori Barang</h1>
+    <p class="text-sm text-gray-500">Daftar seluruh barang dalam stok Anda</p>
+</div>
+
+<div class="flex flex-col sm:flex-row items-center gap-4 mb-6">
+    <!-- Search -->
+    <form method="GET" action="{{ url_for('inventory_page') }}" class="relative w-full sm:w-[350px]">
+        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm">🔍</span>
+        <input type="text" name="search" value="{{ query }}" placeholder="Cari nama atau kategori..."
+            class="w-full pl-10 pr-4 py-2.5 rounded-full bg-white border border-gray-100 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm shadow-sm transition-all">
+    </form>
+
+    <!-- Sort -->
+    <form method="GET" action="{{ url_for('inventory_page') }}" class="w-full sm:w-auto flex items-center gap-2">
+        {% if query %}<input type="hidden" name="search" value="{{ query }}">{% endif %}
+        <span class="text-sm font-semibold text-gray-500 hidden sm:inline-block whitespace-nowrap">Urutkan:</span>
+        <select name="sort_by" onchange="this.form.submit()" 
+            class="w-full sm:w-auto px-4 py-2.5 rounded-full bg-white border border-gray-100 text-textmain text-sm font-semibold shadow-sm hover:bg-pink-50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all cursor-pointer">
+            <option value="" {% if sort_by == '' %}selected{% endif %}>Waktu Ditambahkan</option>
+            <option value="nama" {% if sort_by == 'nama' %}selected{% endif %}>Nama Barang (A-Z)</option>
+            <option value="sku" {% if sort_by == 'sku' %}selected{% endif %}>Kode SKU (A-Z)</option>
+            <option value="stok" {% if sort_by == 'stok' %}selected{% endif %}>Sisa Stok (Sedikit - Banyak)</option>
+        </select>
+    </form>
+
+    <!-- Tombol Undo -->
+    <form action="{{ url_for('undo_action') }}" method="POST">
+        <button type="submit" {% if not logs %}disabled{% endif %} class="w-full sm:w-auto px-5 py-2.5 rounded-full text-sm font-bold flex items-center gap-2 justify-center transition-all
+            {% if logs %}
+                bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-md shadow-purple-200 hover:-translate-y-0.5
+            {% else %}
+                bg-gray-100 text-gray-400 cursor-not-allowed
+            {% endif %}">
+            ↩ Undo
+            {% if logs %}
+            <span class="bg-white/30 text-white text-[10px] font-black px-1.5 py-0.5 rounded-full">
+                {{ logs|length }}
+            </span>
+            {% endif %}
+        </button>
+    </form>
+
+    <a href="{{ url_for('add_page') }}"
+        class="ml-auto bg-gradient-to-r from-primary to-pink-400 text-white px-5 py-2.5 rounded-full text-sm font-bold shadow-md shadow-pink-200 hover:-translate-y-0.5 transition-all">
+        + Tambah Barang
+    </a>
+</div>
+
+<!-- Preview aksi terakhir yang bisa di-undo -->
+{% if logs %}
+<div class="mb-5 flex items-center gap-3 px-5 py-3 rounded-2xl border text-sm
+            bg-violet-50/60 border-violet-100">
+    <span class="text-base">📋</span>
+    <div class="flex-1">
+        <span class="text-[10px] font-bold text-violet-400 uppercase tracking-wider">Aksi terakhir (bisa diundo)</span>
+        <p class="text-violet-700 font-semibold text-xs mt-0.5">{{ logs[-1] }}</p>
+    </div>
+    <form action="{{ url_for('undo_action') }}" method="POST">
+        <button type="submit"
+            class="px-3 py-1.5 rounded-full bg-violet-500 text-white text-[11px] font-bold hover:bg-violet-600 transition-colors shadow-sm">
+            ↩ Batalkan
+        </button>
+    </form>
+</div>
+{% endif %}
+
+<!-- Table Card -->
+<div class="bg-white border border-gray-100 rounded-3xl shadow-lg shadow-pink-50/50 overflow-hidden mb-8">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left">
+            <thead>
+                <tr class="border-b border-gray-100 bg-gray-50/50">
+                    <th class="py-4 px-6 text-[11px] font-bold text-gray-400 tracking-wider uppercase">SKU</th>
+                    <th class="py-4 px-6 text-[11px] font-bold text-gray-400 tracking-wider uppercase">Nama Barang</th>
+                    <th class="py-4 px-6 text-[11px] font-bold text-gray-400 tracking-wider uppercase">Kategori</th>
+                    <th class="py-4 px-6 text-[11px] font-bold text-gray-400 tracking-wider uppercase">Stok</th>
+                    <th class="py-4 px-6 text-[11px] font-bold text-gray-400 tracking-wider uppercase">Harga Satuan</th>
+                    <th class="py-4 px-6 text-[11px] font-bold text-gray-400 tracking-wider uppercase text-center">
+                        Mutasi</th>
+                    <th class="py-4 px-6 text-[11px] font-bold text-gray-400 tracking-wider uppercase text-center">Aksi
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="text-sm">
+                {% for sku, details in products %}
+
+                {% set stok_menipis = details.stok > 0 and details.stok <= 5 %} <tr class="border-b border-gray-50 transition-colors
+                    {% if stok_menipis %}bg-red-50/60 hover:bg-red-50{% else %}hover:bg-pink-50/30{% endif %}">
+
+                    <td class="py-4 px-6 font-bold text-primary whitespace-nowrap">{{ sku }}</td>
+
+                    <td class="py-4 px-6 font-semibold text-textmain whitespace-nowrap">{{ details.nama }}</td>
+
+                    <td class="py-4 px-6 whitespace-nowrap">
+                        <span
+                            class="inline-block px-3 py-1 rounded-full bg-gray-100 text-gray-600 text-[11px] font-bold">
+                            {{ details.kategori }}
+                        </span>
+                    </td>
+
+                    <td class="py-4 px-6 whitespace-nowrap">
+                        {% if stok_menipis %}
+                        <div class="flex flex-col gap-0.5">
+                            <span class="text-lg font-black text-red-500 leading-none">{{ details.stok }}</span>
+                            <span class="inline-flex items-center gap-1 text-[10px] font-bold text-red-500">
+                                <span class="inline-block w-1.5 h-1.5 rounded-full bg-red-500 animate-ping"></span>
+                                Butuh Restock
+                            </span>
+                        </div>
+                        {% else %}
+                        <span class="font-bold text-textmain">{{ details.stok }}</span>
+                        {% endif %}
+                    </td>
+
+                    <td class="py-4 px-6 font-medium text-gray-500 whitespace-nowrap">
+                        Rp {{ "{:,}".format(details.harga).replace(',', '.') }}
+                    </td>
+
+                    <!-- Mutasi — selalu tampil -->
+                    <td class="py-3 px-6 whitespace-nowrap">
+                        <form action="{{ url_for('update_stok', sku=sku) }}" method="POST"
+                            class="flex justify-center items-center gap-1.5">
+                            <select name="tipe"
+                                class="border border-gray-200 bg-white rounded-lg text-[11px] px-1.5 h-8 focus:outline-none focus:border-primary cursor-pointer">
+                                <option value="masuk">Masuk (+)</option>
+                                <option value="keluar">Keluar (-)</option>
+                            </select>
+                            <input type="number" name="jumlah" min="1" value="1"
+                                class="w-12 h-8 px-1 border border-gray-200 bg-white rounded-lg text-[11px] text-center focus:outline-none focus:border-primary">
+                            <button type="submit" class="h-8 px-3 rounded-lg text-[11px] font-bold transition-colors
+                                {% if stok_menipis %}
+                                    bg-red-100 text-red-600 hover:bg-red-500 hover:text-white
+                                {% else %}
+                                    bg-pink-100 text-primary hover:bg-primary hover:text-white
+                                {% endif %}">
+                                ✓
+                            </button>
+                        </form>
+                    </td>
+
+                    <!-- Aksi — selalu tampil -->
+                    <td class="py-3 px-6 whitespace-nowrap">
+                        <div class="flex justify-center items-center gap-2">
+                            <a href="{{ url_for('edit_page', sku=sku) }}"
+                                class="w-8 h-8 rounded-lg bg-blue-50 text-blue-500 flex items-center justify-center hover:bg-blue-500 hover:text-white transition-colors text-xs"
+                                title="Edit">✏️</a>
+                            <form action="{{ url_for('delete_item', sku=sku) }}" method="POST"
+                                onsubmit="return confirm('Yakin ingin menghapus {{ details.nama }}?');">
+                                <button type="submit"
+                                    class="w-8 h-8 rounded-lg bg-red-50 text-red-500 flex items-center justify-center hover:bg-red-500 hover:text-white transition-colors text-xs"
+                                    title="Hapus">🗑️</button>
+                            </form>
+                        </div>
+                    </td>
+                    </tr>
+
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="py-12 text-center text-gray-400 text-sm">
+                            <div class="text-4xl mb-3 opacity-30">📦</div>
+                            Belum ada barang di inventori Anda.<br>Tambahkan barang pertama Anda sekarang!
+                        </td>
+                    </tr>
+                    {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Stack Log LIFO -->
+{% if logs %}
+<div class="bg-white border border-gray-100 rounded-3xl shadow-sm overflow-hidden">
+    <div class="flex items-center justify-between px-6 py-4 border-b border-gray-50">
+        <div class="flex items-center gap-2">
+            <span class="text-base">🗂️</span>
+            <h3 class="text-sm font-bold text-textmain">Riwayat Aktivitas</h3>
+            <span class="bg-violet-100 text-violet-600 text-[10px] font-black px-2 py-0.5 rounded-full">
+                Stack LIFO
+            </span>
+        </div>
+        <span class="text-[11px] text-gray-400">{{ logs|length }} aktivitas tercatat</span>
+    </div>
+    <div class="divide-y divide-gray-50 max-h-56 overflow-y-auto">
+        {% for log in logs|reverse %}
+        <div class="flex items-center gap-3 px-6 py-3">
+            <!-- Index dari atas stack -->
+            {% set idx = loop.index0 %}
+            {% if idx == 0 %}
+            <span
+                class="w-5 h-5 rounded-full bg-violet-500 text-white text-[9px] font-black flex items-center justify-center flex-shrink-0">↩</span>
+            {% else %}
+            <span
+                class="w-5 h-5 rounded-full bg-gray-100 text-gray-400 text-[9px] font-bold flex items-center justify-center flex-shrink-0">{{
+                idx + 1 }}</span>
+            {% endif %}
+            <span class="text-xs text-gray-600 {% if idx == 0 %}font-semibold text-violet-700{% endif %}">
+                {{ log }}
+            </span>
+            {% if idx == 0 %}
+            <span
+                class="ml-auto text-[9px] bg-violet-100 text-violet-500 font-bold px-2 py-0.5 rounded-full whitespace-nowrap">TOP</span>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

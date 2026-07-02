@@ -1,0 +1,167 @@
+{% extends 'layout.html' %}
+
+{% block title %}Tentang Kami - Stock.n{% endblock %}
+
+{% block content %}
+<div class="flex-grow pt-12 pb-20">
+    <div class="container mx-auto px-6 max-w-5xl">
+
+        <!-- ===== HERO INTRO ===== -->
+        <div class="text-center mb-20">
+            <span
+                class="inline-block text-xs font-bold tracking-widest text-primary uppercase mb-4 px-3 py-1 bg-primary/10 rounded-full">Smart
+                Inventory System</span>
+            <h1 class="text-4xl md:text-5xl font-bold text-heading mb-6 leading-tight">
+                Misi Kami di Balik<br class="hidden md:block"> Stock.n
+            </h1>
+            <p class="text-paragraph max-w-2xl mx-auto leading-relaxed text-sm md:text-base">
+                Stock.n adalah sistem informasi inventori koperasi yang dirancang dengan dedikasi penuh untuk membantu
+                pengelolaan stok barang secara efisien, akurat, dan mudah digunakan oleh siapa saja.
+            </p>
+        </div>
+
+        <!-- ===== TENTANG STOCK.N ===== -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center mb-24">
+            <div>
+                <span class="inline-block text-xs font-bold tracking-widest text-primary uppercase mb-3">Apa itu
+                    Stock.n?</span>
+                <h2 class="text-2xl md:text-3xl font-bold text-heading mb-5 leading-snug">Inventori Cerdas untuk
+                    Koperasi Modern</h2>
+                <p class="text-paragraph text-sm leading-relaxed mb-4">
+                    Stock.n hadir sebagai solusi digital untuk permasalahan klasik pengelolaan stok di koperasi —
+                    pencatatan manual yang rawan error, data yang tidak sinkron, dan laporan yang memakan waktu.
+                </p>
+                <p class="text-paragraph text-sm leading-relaxed">
+                    Dengan antarmuka yang bersih dan alur kerja yang intuitif, Stock.n memungkinkan pengurus koperasi
+                    memantau pergerakan barang secara real-time, mengelola data stok dengan tepat, dan menghasilkan
+                    laporan dengan mudah — semua dalam satu platform terpadu.
+                </p>
+            </div>
+            <div class="flex justify-center">
+                <div class="w-full max-w-[320px] aspect-square rounded-[2rem] mx-auto shadow-card overflow-hidden border border-bordercolor group hover:shadow-soft transition-all">
+                    <img src="{{ url_for('static', filename='about_hero.png') }}" alt="Ilustrasi Stock.n"
+                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== VISI & MISI ===== -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-24">
+            <!-- Visi -->
+            <div class="bg-sectionbg border border-bordercolor rounded-3xl p-8 shadow-card">
+                <div class="flex items-center gap-3 mb-5">
+                    <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                        <!-- Eye icon -->
+                        <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" stroke-width="1.8"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-heading">Visi</h3>
+                </div>
+                <p class="text-paragraph text-sm leading-relaxed">
+                    Menjadi sistem informasi inventori koperasi yang terpercaya, modern, dan mudah diakses — mendorong
+                    koperasi Indonesia bertransformasi digital dengan pengelolaan stok yang lebih cerdas dan transparan.
+                </p>
+            </div>
+
+            <!-- Misi -->
+            <div class="bg-sectionbg border border-bordercolor rounded-3xl p-8 shadow-card">
+                <div class="flex items-center gap-3 mb-5">
+                    <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                        <!-- Target icon -->
+                        <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" stroke-width="1.8"
+                            viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10" />
+                            <circle cx="12" cy="12" r="6" />
+                            <circle cx="12" cy="12" r="2" />
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-heading">Misi</h3>
+                </div>
+                <ul class="space-y-3">
+                    <li class="flex items-start gap-2 text-sm text-paragraph">
+                        <span class="text-primary font-bold mt-0.5">✓</span>
+                        Menyederhanakan pencatatan dan pemantauan stok barang koperasi secara digital.
+                    </li>
+                    <li class="flex items-start gap-2 text-sm text-paragraph">
+                        <span class="text-primary font-bold mt-0.5">✓</span>
+                        Menyediakan laporan inventori yang akurat dan dapat diandalkan untuk pengambilan keputusan.
+                    </li>
+                    <li class="flex items-start gap-2 text-sm text-paragraph">
+                        <span class="text-primary font-bold mt-0.5">✓</span>
+                        Membangun sistem yang mudah digunakan oleh semua kalangan tanpa keahlian teknis khusus.
+                    </li>
+                    <li class="flex items-start gap-2 text-sm text-paragraph">
+                        <span class="text-primary font-bold mt-0.5">✓</span>
+                        Mendukung pertumbuhan koperasi melalui efisiensi operasional berbasis teknologi.
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ===== TIM PENGEMBANG ===== -->
+        <div class="mb-10 text-center">
+            <span class="inline-block text-xs font-bold tracking-widest text-primary uppercase mb-3">Tim</span>
+            <h2 class="text-2xl md:text-3xl font-bold text-heading mb-3">Pembuat Aplikasi</h2>
+            <p class="text-paragraph text-sm max-w-xl mx-auto mb-12">Dikembangkan oleh tiga mahasiswa yang bersemangat
+                mewujudkan solusi digital nyata untuk koperasi Indonesia.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+
+                <!-- Anggota 1: Dhiya -->
+                <div
+                    class="bg-sectionbg border border-bordercolor p-8 rounded-3xl shadow-card hover:shadow-soft flex flex-col items-center text-center transition-all group">
+                    <div
+                        class="w-24 h-24 rounded-full bg-pink-100 mb-5 shadow-inner overflow-hidden border-4 border-white flex items-center justify-center group-hover:-translate-y-2 transition-transform">
+                        <img src="{{ url_for('static', filename='qya.png') }}" alt="Dhiya Nailah Rizqya"
+                            class="w-full h-full object-cover"
+                            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <span
+                            class="text-3xl font-bold text-primary hidden w-full h-full items-center justify-center">D</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-heading mb-1">Dhiya Nailah Rizqya</h3>
+                    <p class="text-xs text-primary font-bold mb-2">0110225095</p>
+                    <p class="text-xs text-paragraph leading-relaxed">Pengembang aplikasi Stock.n</p>
+                </div>
+
+                <!-- Anggota 2: Nayla -->
+                <div
+                    class="bg-sectionbg border border-bordercolor p-8 rounded-3xl shadow-card hover:shadow-soft flex flex-col items-center text-center transition-all group">
+                    <div
+                        class="w-24 h-24 rounded-full bg-blue-100 mb-5 shadow-inner overflow-hidden border-4 border-white flex items-center justify-center group-hover:-translate-y-2 transition-transform">
+                        <img src="{{ url_for('static', filename='nay.png') }}" alt="Nayla Aulia Nafisha"
+                            class="w-full h-full object-cover"
+                            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <span
+                            class="text-3xl font-bold text-blue-500 hidden w-full h-full items-center justify-center">N</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-heading mb-1">Nayla Aulia Nafisha</h3>
+                    <p class="text-xs text-blue-500 font-bold mb-2">0110225094</p>
+                    <p class="text-xs text-paragraph leading-relaxed">Pengembang aplikasi Stock.n</p>
+                </div>
+
+                <!-- Anggota 3: Nadia -->
+                <div
+                    class="bg-sectionbg border border-bordercolor p-8 rounded-3xl shadow-card hover:shadow-soft flex flex-col items-center text-center transition-all group">
+                    <div
+                        class="w-24 h-24 rounded-full bg-purple-100 mb-5 shadow-inner overflow-hidden border-4 border-white flex items-center justify-center group-hover:-translate-y-2 transition-transform">
+                        <img src="{{ url_for('static', filename='aca.png') }}" alt="Nadia Calistha"
+                            class="w-full h-full object-cover"
+                            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <span
+                            class="text-3xl font-bold text-purple-500 hidden w-full h-full items-center justify-center">N</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-heading mb-1">Nadia Calistha</h3>
+                    <p class="text-xs text-purple-500 font-bold mb-2">0110225091</p>
+                    <p class="text-xs text-paragraph leading-relaxed">Pengembang aplikasi Stock.n</p>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

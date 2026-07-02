@@ -1,0 +1,31 @@
+{% extends 'layout_admin.html' %}
+
+{% block title %}Kategori - Stock.n{% endblock %}
+{% block header_title %}Kategori Barang{% endblock %}
+
+{% block content %}
+<div class="mb-8">
+    <h1 class="text-2xl font-bold text-textmain mb-1">Kategori Barang</h1>
+    <p class="text-sm text-gray-500">Kelompokkan barang Anda untuk mempermudah pencarian.</p>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-5">
+    {% for kat, count in kategori_data.items() %}
+    <div
+        class="bg-white p-6 rounded-3xl border border-white shadow-lg shadow-blue-100/30 flex flex-col hover:-translate-y-1 transition-transform">
+        <div
+            class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-100 to-blue-50 text-primary flex items-center justify-center text-xl shadow-inner mb-4">
+            📁
+        </div>
+        <h3 class="text-lg font-bold text-textmain mb-1">{{ kat }}</h3>
+        <p class="text-xs text-gray-400">{{ count }} Macam Barang</p>
+    </div>
+    {% else %}
+    <div
+        class="col-span-full py-12 text-center text-gray-400 text-sm bg-white rounded-3xl border border-gray-100 shadow-sm">
+        <div class="text-4xl mb-3 opacity-30">📁</div>
+        Belum ada kategori yang tercatat.<br>Kategori akan muncul secara otomatis ketika Anda menambahkan barang.
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

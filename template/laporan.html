@@ -1,0 +1,55 @@
+{% extends 'layout_admin.html' %}
+
+{% block title %}Laporan - Stock.n{% endblock %}
+{% block header_title %}Laporan & Riwayat{% endblock %}
+
+{% block content %}
+<div class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <div>
+        <h1 class="text-2xl font-bold text-textmain mb-1">Riwayat Aktivitas</h1>
+        <p class="text-sm text-gray-500">Riwayat mutasi dan perubahan data inventori Anda.</p>
+    </div>
+    <form action="{{ url_for('undo_action') }}" method="POST">
+        <button type="submit"
+            class="px-5 py-2 bg-white border border-gray-200 text-textmain text-sm font-bold rounded-full hover:bg-pink-50 hover:text-primary transition-colors shadow-sm flex items-center gap-2"
+            {% if not logs %}disabled style="opacity:0.5;" {% endif %}>
+            ↩ Undo Aktivitas Terakhir
+        </button>
+    </form>
+</div>
+
+<div class="bg-white border border-gray-100 rounded-3xl shadow-lg shadow-pink-50/50 overflow-hidden relative">
+    <div class="absolute top-0 left-0 w-2 bg-gradient-to-b from-primary to-secondary h-full"></div>
+    <div class="p-8">
+        {% if logs %}
+        <div class="space-y-6 pl-6 border-l-2 border-gray-100 relative">
+            {% for log in logs %}
+            <div class="relative">
+                <div class="absolute -left-[33px] w-4 h-4 rounded-full bg-white border-4 border-primary top-1"></div>
+                <div
+                    class="bg-gray-50/50 rounded-2xl p-4 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                    <p class="text-sm font-medium text-textmain">
+                        {{ log.text }}
+                    </p>
+                    <div class="mt-2 flex gap-2">
+                        <span
+                            class="text-[10px] bg-white border border-gray-200 text-gray-400 px-2 py-0.5 rounded font-bold uppercase tracking-wider">{{
+                            log.tipe }}</span>
+                        {% if log.sku %}
+                        <span class="text-[10px] bg-pink-50 text-primary px-2 py-0.5 rounded font-mono font-bold">{{
+                            log.sku }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-10">
+            <div class="text-4xl mb-3 opacity-30 text-gray-400">📜</div>
+            <p class="text-gray-400 text-sm">Belum ada aktivitas terekam.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

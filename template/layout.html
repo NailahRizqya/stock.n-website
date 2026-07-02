@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Stock.n - Smart Inventory Management{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Poppins', 'sans-serif'] },
+                    colors: {
+                        primary: '#8B5CF6',
+                        secondary: '#EC4899',
+                        galaxy: '#60A5FA',
+                        bglight: '#F8F6FF',
+                        textmain: '#3B1F6A',
+                        paragraph: '#6B5A8E',
+                        bordercolor: '#E8D5F0',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(140deg, #F8F6FF 0%, #FFF5FC 60%, #F0F7FF 100%);
+            color: #6B5A8E;
+            min-height: 100vh;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #F5F0FF;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #93C5FD, #C084FC, #F9A8D4);
+            border-radius: 4px;
+        }
+
+        .nav-galaxy {
+            background: rgba(255, 255, 255, 0.78);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(200, 170, 230, 0.3);
+        }
+
+        .logo-gradient {
+            background: linear-gradient(90deg, #5A9EF0, #A855F7, #EC4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .btn-galaxy {
+            background: linear-gradient(135deg, #7AB3F5, #C97DE8, #F47AB0);
+            color: white;
+            transition: all 0.2s;
+        }
+
+        .btn-galaxy:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .footer-galaxy {
+            background: linear-gradient(135deg, #6D28D9, #9333EA, #EC4899);
+        }
+
+        .flash-success {
+            background: rgba(200, 255, 230, 0.6);
+            border: 1px solid rgba(100, 200, 150, 0.35);
+            color: #2A6A4A;
+        }
+
+        .flash-error {
+            background: rgba(255, 210, 220, 0.6);
+            border: 1px solid rgba(240, 140, 160, 0.35);
+            color: #8A2040;
+        }
+
+        .flash-info {
+            background: rgba(200, 200, 255, 0.6);
+            border: 1px solid rgba(160, 160, 240, 0.35);
+            color: #3030A0;
+        }
+
+        .flash-warning {
+            background: rgba(255, 240, 200, 0.6);
+            border: 1px solid rgba(240, 200, 100, 0.35);
+            color: #7A5A00;
+        }
+    </style>
+</head>
+
+<body class="flex flex-col min-h-screen">
+
+    <!-- Navbar -->
+    <nav class="nav-galaxy sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="{{ url_for('index') }}" class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center shadow-sm overflow-hidden">
+                    <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo"
+                        class="w-full h-full object-cover">
+                </div>
+                <span class="text-xl font-bold logo-gradient hidden sm:block">stock.n</span>
+            </a>
+
+            <div class="flex items-center gap-6 sm:gap-8 font-medium text-sm">
+                <a href="{{ url_for('index') }}"
+                    class="transition-colors {% if request.endpoint == 'index' %}font-bold{% else %}hover:opacity-80{% endif %}"
+                    style="color: {% if request.endpoint == 'index' %}#8B5CF6{% else %}#6B5A8E{% endif %};">
+                    Home
+                </a>
+                <a href="{{ url_for('inventory_page') }}"
+                    class="transition-colors {% if request.endpoint == 'inventory_page' %}font-bold{% else %}hover:opacity-80{% endif %}"
+                    style="color: {% if request.endpoint == 'inventory_page' %}#8B5CF6{% else %}#6B5A8E{% endif %};">
+                    Inventory
+                </a>
+                <a href="{{ url_for('about') }}"
+                    class="transition-colors hidden sm:block {% if request.endpoint == 'about' %}font-bold{% else %}hover:opacity-80{% endif %}"
+                    style="color: {% if request.endpoint == 'about' %}#8B5CF6{% else %}#6B5A8E{% endif %};">
+                    About Us
+                </a>
+
+                {% if session.get('logged_in') %}
+                <a href="{{ url_for('dashboard_manage') }}"
+                    class="btn-galaxy px-5 py-2 rounded-full text-sm font-bold shadow-md">
+                    Dashboard
+                </a>
+                {% else %}
+                <a href="{{ url_for('login') }}" class="btn-galaxy px-5 py-2 rounded-full text-sm font-bold shadow-md">
+                    Login
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    <div class="container mx-auto px-6 mt-4">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        {% set flash_class = 'flash-warning' %}
+        {% if category == 'success' %}{% set flash_class = 'flash-success' %}{% endif %}
+        {% if category == 'error' %}{% set flash_class = 'flash-error' %}{% endif %}
+        {% if category == 'info' %}{% set flash_class = 'flash-info' %}{% endif %}
+        <div class="p-3 mb-2 text-sm rounded-2xl {{ flash_class }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Main Content -->
+    <main class="flex-grow flex flex-col">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer-galaxy text-white py-6 mt-auto">
+        <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="text-xl font-bold">stock.n</div>
+            <div class="text-sm font-medium opacity-90">
+                &copy; 2026 stock.n &nbsp;|&nbsp; Smart Inventory Management
+            </div>
+            <div class="text-lg">🤍</div>
+        </div>
+    </footer>
+
+</body>
+
+</html>

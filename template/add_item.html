@@ -1,0 +1,76 @@
+{% extends 'layout_admin.html' %}
+
+{% block title %}Tambah Barang - Stock.n{% endblock %}
+{% block header_title %}Tambah Barang{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+    <div
+        class="bg-white rounded-3xl border border-gray-100 shadow-lg shadow-blue-50/50 p-8 md:p-10 relative overflow-hidden">
+
+        <div class="flex items-center gap-3 mb-8 pb-6 border-b border-gray-100">
+            <span
+                class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-100 to-blue-50 text-primary flex items-center justify-center text-2xl shadow-inner">📋</span>
+            <div>
+                <h1 class="text-xl font-bold text-textmain">Tambah Barang Baru</h1>
+                <p class="text-xs text-gray-400">Masukkan detail barang ke dalam inventori Anda.</p>
+            </div>
+        </div>
+
+        <form action="{{ url_for('add_item') }}" method="POST" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                <div>
+                    <label class="block text-xs font-bold mb-2 text-textmain uppercase tracking-wider">Kode Barang
+                        (SKU)</label>
+                    <input type="text" name="sku" placeholder="Contoh: BRG008"
+                        class="w-full px-4 py-3.5 rounded-2xl bg-gray-50 border border-transparent focus:bg-white focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary text-sm transition-all font-mono shadow-sm"
+                        required>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold mb-2 text-textmain uppercase tracking-wider">Nama
+                        Barang</label>
+                    <input type="text" name="nama" placeholder="Masukkan nama barang"
+                        class="w-full px-4 py-3.5 rounded-2xl bg-gray-50 border border-transparent focus:bg-white focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary text-sm transition-all shadow-sm"
+                        required>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold mb-2 text-textmain uppercase tracking-wider">Kategori</label>
+                    <input type="text" name="kategori" placeholder="Contoh: Makanan, Elektronik"
+                        class="w-full px-4 py-3.5 rounded-2xl bg-gray-50 border border-transparent focus:bg-white focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary text-sm transition-all shadow-sm"
+                        required>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold mb-2 text-textmain uppercase tracking-wider">Jumlah Stok
+                        Awal</label>
+                    <input type="number" name="stok" min="1" placeholder="Masukkan jumlah"
+                        class="w-full px-4 py-3.5 rounded-2xl bg-gray-50 border border-transparent focus:bg-white focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary text-sm transition-all shadow-sm"
+                        required>
+                </div>
+
+                <div class="md:col-span-1">
+                    <label class="block text-xs font-bold mb-2 text-textmain uppercase tracking-wider">Harga
+                        Satuan</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-500">Rp</span>
+                        <input type="number" name="harga" min="0" placeholder="Masukkan harga"
+                            class="w-full pl-10 pr-4 py-3.5 rounded-2xl bg-gray-50 border border-transparent focus:bg-white focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary text-sm transition-all shadow-sm"
+                            required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-8 mt-8 border-t border-gray-100 flex justify-end gap-3">
+                <a href="{{ url_for('inventory_page') }}"
+                    class="px-8 py-3.5 rounded-full font-bold text-gray-500 hover:text-textmain hover:bg-gray-50 transition-colors text-sm">
+                    Batal
+                </a>
+                <button type="submit"
+                    class="bg-gradient-to-r from-primary to-blue-400 text-white px-8 py-3.5 rounded-full font-bold shadow-md shadow-blue-200 hover:-translate-y-0.5 transition-all text-sm flex items-center gap-2">
+                    ✓ Simpan Barang
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
